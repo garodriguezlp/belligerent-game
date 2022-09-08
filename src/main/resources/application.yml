@@ -1,3 +1,4 @@
+# logging config
 logging:
   level:
     org.springframework.web: TRACE
@@ -5,3 +6,9 @@ logging:
     reactor.core: TRACE
     io.netty: TRACE
 
+# spring config
+spring:
+  main:
+    web-application-type: none
+
+twitter.api-key: ${TWITTER_BEARER_TOKEN}
