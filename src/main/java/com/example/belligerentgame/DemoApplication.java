@@ -1,15 +1,22 @@
 package com.example.belligerentgame;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.netty.channel.ChannelOption;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
+
+import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
+import static io.netty.channel.ChannelOption.TCP_NODELAY;
 
 @SpringBootApplication
 public class DemoApplication {
@@ -19,8 +26,18 @@ public class DemoApplication {
     }
 
     @Bean
-    public WebClient webClient() {
-        return WebClient.create();
+    public HttpClient httpClient() {
+        return HttpClient.create()
+                .option(CONNECT_TIMEOUT_MILLIS, 5000)
+                .option(TCP_NODELAY, true)
+                .responseTimeout(Duration.ofMillis(5000));
+    }
+
+    @Bean
+    public WebClient webClient(HttpClient httpClient) {
+        return WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .build();
     }
 
     @Bean
