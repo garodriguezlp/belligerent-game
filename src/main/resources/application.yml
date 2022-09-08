@@ -1,0 +1,7 @@
+logging:
+  level:
+    org.springframework.web: TRACE
+    org.springframework.http: TRACE
+    reactor.core: TRACE
+    io.netty: TRACE
+
